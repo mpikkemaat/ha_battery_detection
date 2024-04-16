@@ -19,7 +19,7 @@ blueprint:
     time:
       name: Time to test on
       description: Test is run at configured time
-      default: '9:00:00'
+      default: '11:00:00'
       selector:
         time: {}
     day:
