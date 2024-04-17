@@ -49,7 +49,7 @@ variables:
     {{result.sensors|join(', ')}}
 trigger:
 - platform: time
-  at: "16:30:00"
+  at: "16:40:00"
 action:
 - choose: []
   default: !input 'actions'
