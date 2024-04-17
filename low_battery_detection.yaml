@@ -61,7 +61,7 @@ variables:
     {{result.sensors|join(', ')}}
 trigger:
 - platform: time
-  at: "16:15:00"
+  at: "16:30:00"
 condition:
 - '{{ sensors != '''' and (day | int == 0 or day | int == now().isoweekday()) }}'
 action:
