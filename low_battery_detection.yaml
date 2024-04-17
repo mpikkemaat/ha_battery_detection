@@ -16,12 +16,6 @@ blueprint:
           unit_of_measurement: '%'
           mode: slider
           step: 5
-    time:
-      name: Time to test on
-      description: Test is run at configured time
-      default: "16:15:00"
-      selector:
-        time: {}
     day:
       name: Weekday to test on
       description: 'Test is run at configured time either everyday (0) or on a given
