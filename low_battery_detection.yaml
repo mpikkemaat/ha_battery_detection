@@ -11,46 +11,51 @@ blueprint:
       default: 10
       selector:
         number:
-          min: 5
-          max: 100
+          min: 5.0
+          max: 100.0
           unit_of_measurement: '%'
           mode: slider
-          step: 5
+          step: 5.0
+    time:
+      name: Time to test on
+      description: Test is run at configured time
+      default: '10:00:00'
+      selector:
+        time: {}
     exclude:
       name: Excluded Sensors
-      description: Battery sensors (e.g. smartphone) to exclude from detection. Only entities are supported, devices must be expanded!
-      default: {entity_id: []}
+      description: Battery sensors (e.g. smartphone) to exclude from detection. Only
+        entities are supported, devices must be expanded!
+      default:
+        entity_id: []
       selector:
         target:
           entity:
-            device_class: battery
+          - device_class:
+            - battery
     actions:
       name: Actions
       description: Notifications or similar to be run. {{sensors}} is replaced with
         the names of sensors being low on battery.
       selector:
         action: {}
-  source_url: https://gist.github.com/sbyx/1f6f434f0903b872b84c4302637d0890
+  source_url: https://github.com/mpikkemaat/ha_battery_detection/blob/main/low_battery_detection.yaml
 variables:
-  threshold: !input 'threshold'
-  exclude: !input 'exclude'
-  sensors: >-
-    {% set result = namespace(sensors=[]) %}
-    {% for state in states.sensor | selectattr('attributes.device_class', '==', 'battery') %}
-      {% if 0 <= state.state | int(-1) < threshold | int and not state.entity_id in exclude.entity_id %}
-        {% set result.sensors = result.sensors + [state.name ~ ' (' ~ state.state ~ ' %)'] %}
-      {% endif %}
-    {% endfor %}
-    {% for state in states.binary_sensor | selectattr('attributes.device_class', '==', 'battery') | selectattr('state', '==', 'on') %}
-      {% if not state.entity_id in exclude.entity_id %}
-        {% set result.sensors = result.sensors + [state.name] %}
-      {% endif %}
-    {% endfor %}
-    {{result.sensors|join(', ')}}
+  threshold: !input threshold
+  exclude: !input exclude
+  sensors: "{% set result = namespace(sensors=[]) %} {% for state in states.sensor
+    | selectattr('attributes.device_class', '==', 'battery') %}\n  {% if 0 <= state.state
+    | int(-1) < threshold | int and not state.entity_id in exclude.entity_id %}\n
+    \   {% set result.sensors = result.sensors + [state.name ~ ' (' ~ state.state
+    ~ ' %)'] %}\n  {% endif %}\n{% endfor %} {% for state in states.binary_sensor
+    | selectattr('attributes.device_class', '==', 'battery') | selectattr('state',
+    '==', 'on') %}\n  {% if not state.entity_id in exclude.entity_id %}\n    {% set
+    result.sensors = result.sensors + [state.name] %}\n  {% endif %}\n{% endfor %}
+    {{result.sensors|join(', ')}}"
 trigger:
 - platform: time
-  at: "16:40:00"
+  at: !input 'time'
 action:
 - choose: []
-  default: !input 'actions'
+  default: !input actions
 mode: single
