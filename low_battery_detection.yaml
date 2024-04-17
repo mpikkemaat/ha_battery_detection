@@ -16,7 +16,7 @@ blueprint:
           unit_of_measurement: '%'
           mode: slider
           step: 5
-    executetime:
+    time:
       name: Time to test on
       description: Test is run at configured time
       default: "16:15:00"
@@ -49,7 +49,6 @@ blueprint:
         action: {}
   source_url: https://gist.github.com/sbyx/1f6f434f0903b872b84c4302637d0890
 variables:
-  executetime: !input 'executetime'
   day: !input 'day'
   threshold: !input 'threshold'
   exclude: !input 'exclude'
@@ -68,7 +67,7 @@ variables:
     {{result.sensors|join(', ')}}
 trigger:
 - platform: time
-  at: executetime
+  at: !input 'time'
 condition:
 - '{{ sensors != '''' and (day | int == 0 or day | int == now().isoweekday()) }}'
 action:
